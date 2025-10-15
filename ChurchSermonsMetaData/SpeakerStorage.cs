@@ -26,7 +26,8 @@ internal class SpeakerStorage
             return Speakers;
         }
         string json = File.ReadAllText(DataFile);
-        return JsonSerializer.Deserialize<Speakers>(json, CachedJsonOptions)!;
+        Speakers = JsonSerializer.Deserialize<Speakers>(json, CachedJsonOptions)!;
+        return Speakers;
     }
 
     public void SaveOptions()
