@@ -1,7 +1,7 @@
 ﻿
 namespace ChurchSermonsMetaData.Models;
 
-internal record SermonInfo
+public record SermonInfo
 {
     public string Title { get; set; } = string.Empty;
     public string Speaker { get; set; } = string.Empty;
