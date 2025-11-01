@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36518.9 d17.14
+VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchSermonsMetaData", "ChurchSermonsMetaData\ChurchSermonsMetaData.csproj", "{C254A757-C6CA-440A-AAA3-DB0CE31F9E79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchSermonsMetaData.Tests", "ChurchSermonsMetaData.Tests\ChurchSermonsMetaData.Tests.csproj", "{8F0E9137-8C59-42B4-B71D-FB8B0320D203}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{C254A757-C6CA-440A-AAA3-DB0CE31F9E79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C254A757-C6CA-440A-AAA3-DB0CE31F9E79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C254A757-C6CA-440A-AAA3-DB0CE31F9E79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F0E9137-8C59-42B4-B71D-FB8B0320D203}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F0E9137-8C59-42B4-B71D-FB8B0320D203}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F0E9137-8C59-42B4-B71D-FB8B0320D203}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F0E9137-8C59-42B4-B71D-FB8B0320D203}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

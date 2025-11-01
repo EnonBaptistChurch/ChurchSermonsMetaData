@@ -21,13 +21,13 @@ namespace ChurchSermonsMetaData
 
             // Register services and forms
             // services.AddSingleton<IWeatherService, WeatherService>();
-            services.AddTransient<ChurchSermonsMetaData>();
+            services.AddTransient<FrmChurchSermonsMetaData>();
 
             // 3. Build provider
             using var serviceProvider = services.BuildServiceProvider();
 
             // 4. Resolve the form from DI
-            var mainForm = serviceProvider.GetRequiredService<ChurchSermonsMetaData>();
+            var mainForm = serviceProvider.GetRequiredService<FrmChurchSermonsMetaData>();
 
             // 5. Run the app
             Application.Run(mainForm);

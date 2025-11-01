@@ -1,6 +1,6 @@
 ﻿namespace ChurchSermonsMetaData
 {
-    partial class ChurchSermonsMetaData
+    partial class FrmChurchSermonsMetaData
     {
         /// <summary>
         ///  Required designer variable.
@@ -29,45 +29,62 @@
         private void InitializeComponent()
         {
             openFileDialog1 = new OpenFileDialog();
-            rdbPastor = new RadioButton();
-            gbSpeakers = new GroupBox();
-            gbSpeakers.SuspendLayout();
+            btnFormSermonInfo = new Button();
+            btnSermonAudioUpload = new Button();
+            button1 = new Button();
             SuspendLayout();
             // 
-            // rdbPastor
+            // btnFormSermonInfo
             // 
-            rdbPastor.Location = new Point(6, 22);
-            rdbPastor.Name = "rdbPastor";
-            rdbPastor.Size = new Size(104, 24);
-            rdbPastor.TabIndex = 0;
-            rdbPastor.Text = "Paul Relf";
+            btnFormSermonInfo.Location = new Point(332, 472);
+            btnFormSermonInfo.Name = "btnFormSermonInfo";
+            btnFormSermonInfo.Size = new Size(129, 51);
+            btnFormSermonInfo.TabIndex = 5;
+            btnFormSermonInfo.Text = "Formulate Sermon Info";
+            btnFormSermonInfo.UseVisualStyleBackColor = true;
+            btnFormSermonInfo.Click += BtnFormSermonInfo_Click;
             // 
-            // gbSpeakers
+            // btnSermonAudioUpload
             // 
-            gbSpeakers.Controls.Add(rdbPastor);
-            gbSpeakers.Location = new Point(142, 133);
-            gbSpeakers.Name = "gbSpeakers";
-            gbSpeakers.Size = new Size(429, 57);
-            gbSpeakers.TabIndex = 1;
-            gbSpeakers.TabStop = false;
-            gbSpeakers.Text = "Speakers";
+            btnSermonAudioUpload.Location = new Point(13, 32);
+            btnSermonAudioUpload.Name = "btnSermonAudioUpload";
+            btnSermonAudioUpload.Size = new Size(75, 42);
+            btnSermonAudioUpload.TabIndex = 6;
+            btnSermonAudioUpload.Text = "Load Sermon Audio";
+            btnSermonAudioUpload.UseVisualStyleBackColor = true;
+            btnSermonAudioUpload.Click += BtnSermonAudioUpload_Click;
             // 
-            // ChurchSermonsMetaData
+            // button1
+            // 
+            button1.Location = new Point(13, 505);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 9;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // FrmChurchSermonsMetaData
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(gbSpeakers);
-            Name = "ChurchSermonsMetaData";
-            Text = "Form1";
-            gbSpeakers.ResumeLayout(false);
+            ClientSize = new Size(794, 535);
+            Controls.Add(button1);
+            Controls.Add(btnSermonAudioUpload);
+            Controls.Add(btnFormSermonInfo);
+            Name = "FrmChurchSermonsMetaData";
+            Text = "Church Sermons Meta Data";
             ResumeLayout(false);
         }
 
         #endregion
 
         private OpenFileDialog openFileDialog1;
-        private RadioButton rdbPastor;
-        private GroupBox gbSpeakers;
+        
+        
+        private Button btnFormSermonInfo;
+        private Button btnSermonAudioUpload;
+        private Button button1;
+        //private GroupBox gbSeries;
     }
 }
