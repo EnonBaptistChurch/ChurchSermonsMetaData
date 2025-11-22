@@ -47,7 +47,7 @@ public class SeriesUI
         form.Controls.Add(gbSeries);
     }
 
-    private void BtnAddSeries_Click(object sender, EventArgs e)
+    private void BtnAddSeries_Click(object? sender, EventArgs e)
     {
         using var inputBox = new InputBoxForm("Add New Series", "New Series Name:");
         if (inputBox.ShowDialog() == DialogResult.OK)

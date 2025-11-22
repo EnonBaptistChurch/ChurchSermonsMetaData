@@ -46,7 +46,7 @@ namespace ChurchSermonsMetaData.UIControls
             form.Controls.Add(gbSpeakers);
         }
 
-        private void BtnElders_Click(object sender, EventArgs e)
+        private void BtnElders_Click(object? sender, EventArgs e)
         {
             using var inputBox = new InputBoxForm("Add New Elder", "New Elder Name:");
             if (inputBox.ShowDialog() == DialogResult.OK)
