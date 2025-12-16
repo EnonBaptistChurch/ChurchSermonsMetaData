@@ -36,7 +36,7 @@
             // 
             // btnFormSermonInfo
             // 
-            btnFormSermonInfo.Location = new Point(332, 472);
+            btnFormSermonInfo.Location = new Point(330, 685);
             btnFormSermonInfo.Name = "btnFormSermonInfo";
             btnFormSermonInfo.Size = new Size(129, 51);
             btnFormSermonInfo.TabIndex = 5;
@@ -56,7 +56,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(13, 505);
+            button1.Location = new Point(12, 699);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 9;
@@ -68,7 +68,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(794, 535);
+            ClientSize = new Size(1077, 748);
             Controls.Add(button1);
             Controls.Add(btnSermonAudioUpload);
             Controls.Add(btnFormSermonInfo);

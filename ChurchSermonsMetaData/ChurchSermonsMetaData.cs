@@ -1,7 +1,6 @@
-using ChurchSermonsMetaData.Models;
+using AudioService.Interfaces;
 using ChurchSermonsMetaData.UIControls;
-using SermonData;
-using System.Windows.Forms;
+using SermonData.Interfaces;
 
 
 namespace ChurchSermonsMetaData
@@ -9,11 +8,16 @@ namespace ChurchSermonsMetaData
     public partial class FrmChurchSermonsMetaData : Form
     {
         private readonly GeneralUI generalUI;
-        public FrmChurchSermonsMetaData()
+        private readonly IAudioService _audioService;
+        private readonly ISermonMetaDataExtractor _sermonMetaDataExtractor;
+
+        public FrmChurchSermonsMetaData(IAudioService audioService, ISermonMetaDataExtractor sermonMetaDataExtractor)
         {
             InitializeComponent();
             generalUI = new GeneralUI(this);
             generalUI.LoadScreens();
+            _audioService = audioService;
+            _sermonMetaDataExtractor = sermonMetaDataExtractor;
         }
 
         private void BtnFormSermonInfo_Click(object sender, EventArgs e)
@@ -27,21 +31,39 @@ namespace ChurchSermonsMetaData
             {
                 // Get the selected file path
                 string filePath = openFileDialog1.FileName;
-                WhisperService whisperService = await WhisperService.CreateAsync("tiny");
-                var transcript = await whisperService.TranscribeAudioAsync(filePath, 2);
-                SermonExtractor sermonExtractor = new();
-                var obj = await sermonExtractor.ExtractMetaAsync(transcript);
-                FileInfo info = new (filePath);
+
+                
+                var whisperTask = Task.Run(async () => await WhisperService.CreateAsync("tiny"));
+                var audioProcessingTask = Task.Run(async () => await _audioService.ProcessAsync(filePath, new AudioService.Models.AudioProcessingOptions()
+                {
+                    MaxMinutes = 5
+                }));
+
+                var whisperService = await whisperTask;
+                var audioFilePath = await audioProcessingTask;
+
+
+                if(audioFilePath == null)
+                {
+                    MessageBox.Show("Audio processing failed.");
+                    return;
+                }
+
+                var transcriptionTask = Task.Run(async () => await whisperService.TranscribeAudioAsync(audioFilePath));
                 
 
+                var transcript = await transcriptionTask;
+                generalUI.GetTranscriptionUI().SetTranscription(string.Join("." +Environment.NewLine,transcript.Split(".", StringSplitOptions.RemoveEmptyEntries)));
+
+                var obj = await _sermonMetaDataExtractor.ExtractMetaAsync(transcript);
+                var biblePassages = string.Join("; ",obj.BiblePassages);
+                generalUI.GetBiblePassagesUI().SetBiblePassages(biblePassages);
+                FileInfo info = new (filePath);
                 var lastWriteTime = info.LastWriteTimeUtc;
 
-                // Example: Display it in a textbox
-                var file = System.IO.File.Open(filePath, FileMode.Open);
+                
 
-                // You can now open/read the file
-                string fileContent = System.IO.File.ReadAllText(filePath);
-                MessageBox.Show($"File Content:\n{fileContent}");
+
             }
         }
 
