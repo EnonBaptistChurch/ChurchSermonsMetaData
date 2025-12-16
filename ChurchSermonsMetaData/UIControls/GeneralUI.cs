@@ -7,6 +7,8 @@ public class GeneralUI(Form form)
     private readonly SpeakersUI speakersUI = new (form);
     private readonly TitleUI titleUI = new (form);
     private readonly DescriptionUI descriptionUI = new (form);
+    private readonly TranscriptionUI transcriptionUI = new(form);
+    private readonly BiblePassageUI biblePassagesUI = new(form);
     private readonly SeriesUI seriesUI = new (form);
     private readonly ServicesUI servicesUI = new (form);
     
@@ -19,6 +21,8 @@ public class GeneralUI(Form form)
         titleUI.LoadTitle(ref groupBoxAddition);
         seriesUI.LoadSeries(ref groupBoxAddition);
         descriptionUI.LoadDescription(ref groupBoxAddition);
+        transcriptionUI.LoadTranscription(ref groupBoxAddition);
+        biblePassagesUI.LoadBiblePassages(ref groupBoxAddition);
 
         speakersUI.ReloadRequested += (s,e) => LoadScreens();
     }
@@ -92,4 +96,9 @@ public class GeneralUI(Form form)
         }
     }
 
+    public SpeakersUI GetSpeakersUI() => speakersUI;
+    public TitleUI GetTitleUI() => titleUI;
+    public DescriptionUI GetDescriptionUI() => descriptionUI;
+    public TranscriptionUI GetTranscriptionUI() => transcriptionUI;
+    public BiblePassageUI GetBiblePassagesUI() => biblePassagesUI;
 }

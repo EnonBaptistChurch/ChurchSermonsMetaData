@@ -1,6 +1,4 @@
 ﻿
-using ChurchSermonsMetaData.Models;
-
 namespace ChurchSermonsMetaData.UIControls;
 
 public class DescriptionUI
