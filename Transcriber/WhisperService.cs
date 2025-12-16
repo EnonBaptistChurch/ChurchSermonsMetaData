@@ -1,4 +1,4 @@
-﻿using NAudio.Wave;
+﻿//using NAudio.Wave;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -75,43 +75,19 @@ public class WhisperService
     /// <summary>
     /// Transcribes an audio file. Optional: limit transcription to first N minutes.
     /// </summary>
-    public async Task<string> TranscribeAudioAsync(string audioFilePath, int? maxMinutes = null)
+    public async Task<string> TranscribeAudioAsync(string audioFilePath)
     {
-        string wavPath = audioFilePath;
-        string truncatedPath = null;
         string transcription;
 
         try
         {
-            if (!audioFilePath.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
-            {
-                wavPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + "_whisper.wav");
-                ConvertToWhisperFormat(audioFilePath, wavPath);
-            }
-
-            string processingPath = wavPath;
-            if (maxMinutes.HasValue)
-            {
-                truncatedPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + "_whisper_truncated.wav");
-                TrimAudioToFirstNMinutes(wavPath, truncatedPath, maxMinutes.Value);
-                processingPath = truncatedPath;
-            }
-
-            var transcriptionResult = await TranscribeAsync(processingPath);
+            var transcriptionResult = await TranscribeAsync(audioFilePath);
             transcription = string.Join(" ", transcriptionResult.ConvertAll(s => s.Text));
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error during transcription: {ex.Message}");
             transcription = string.Empty;
-        }
-        finally
-        {
-            if (wavPath != audioFilePath && File.Exists(wavPath))
-                File.Delete(wavPath);
-
-            if (truncatedPath != null && File.Exists(truncatedPath))
-                File.Delete(truncatedPath);
         }
 
         return transcription;
@@ -138,37 +114,5 @@ public class WhisperService
         }
 
         return resultGroupings;
-    }
-
-    private static void ConvertToWhisperFormat(string inputFile, string outputFile)
-    {
-        using var reader = new AudioFileReader(inputFile);
-        var outFormat = new WaveFormat(16000, 16, 1);
-
-        using var resampler = new MediaFoundationResampler(reader, outFormat);
-        WaveFileWriter.CreateWaveFile(outputFile, resampler);
-    }
-
-    private static void TrimAudioToFirstNMinutes(string inputFile, string outputFile, int minutes)
-    {
-        using var reader = new AudioFileReader(inputFile);
-        var outFormat = new WaveFormat(16000, 16, 1);
-        using var resampler = new MediaFoundationResampler(reader, outFormat);
-
-        int bytesPerSecond = resampler.WaveFormat.AverageBytesPerSecond;
-        int bytesToCopy = bytesPerSecond * 60 * minutes;
-
-        using var writer = new WaveFileWriter(outputFile, resampler.WaveFormat);
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-        int totalBytesCopied = 0;
-
-        while ((bytesRead = resampler.Read(buffer, 0, buffer.Length)) > 0 && totalBytesCopied < bytesToCopy)
-        {
-            int bytesRemaining = bytesToCopy - totalBytesCopied;
-            int bytesToWrite = Math.Min(bytesRead, bytesRemaining);
-            writer.Write(buffer, 0, bytesToWrite);
-            totalBytesCopied += bytesToWrite;
-        }
     }
 }
