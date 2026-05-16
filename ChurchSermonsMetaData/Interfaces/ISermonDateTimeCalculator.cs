@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ChurchSermonsMetaData.Interfaces
 {
-    internal interface ISermonDateTimeCalculator
+    public interface ISermonDateTimeCalculator
     {
 
         SermonServiceAndDate GetSermonServiceInfoAsync(FileInfo file);

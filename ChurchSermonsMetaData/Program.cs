@@ -1,4 +1,11 @@
+using AudioService.Interfaces;
+using AudioService.Services;
+using ChurchSermonsMetaData.Interfaces;
+using ChurchSermonsMetaData.Services;
 using Microsoft.Extensions.DependencyInjection;
+using SermonData.Interfaces;
+using SermonData.Services;
+
 
 namespace ChurchSermonsMetaData
 {
@@ -22,6 +29,10 @@ namespace ChurchSermonsMetaData
             // Register services and forms
             // services.AddSingleton<IWeatherService, WeatherService>();
             services.AddTransient<FrmChurchSermonsMetaData>();
+            services.AddScoped<IAudioService, AudioService.Services.AudioService>();
+            services.AddScoped<IBiblePassageExtractor, BiblePassageExtractor>();
+            services.AddScoped<ISermonMetaDataExtractor, SermonMetaDataExtractor>();
+            services.AddScoped<ISermonDateTimeCalculator, SermonDateTimeCalculator>();
 
             // 3. Build provider
             using var serviceProvider = services.BuildServiceProvider();

@@ -8,7 +8,7 @@ internal class SeriesStorage
 {
     private static readonly JsonSerializerOptions CachedJsonOptions = new() { WriteIndented = true };
 
-    private Series Series { get; set; } = new Series() { SeriesNames= ["One-Off"] };
+    private Series Series { get; set; } = new Series() { SeriesNames= ["N/A", "One-Off"] };
     public static string AppFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ChurchSermonsMetaData");
 
     public static string DataFile => Path.Combine(AppFolder, "series.json");

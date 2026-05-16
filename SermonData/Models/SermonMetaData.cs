@@ -8,6 +8,6 @@ namespace SermonData.Models
     {
         public string Title { get; set; }
         public string Series { get; set; }
-        public List<string> BiblePassage { get; set; }
+        public List<string> BiblePassages { get; set; }
     }
 }

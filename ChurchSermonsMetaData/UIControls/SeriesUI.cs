@@ -7,11 +7,16 @@ public class SeriesUI
     private readonly GroupBox gbSeries;
     private readonly ComboBox cmbSeries;
     private readonly Button btnAddSeries;
-    private SeriesStorage SeriesStorage { get; set; } 
 
-    public SeriesUI(Form form)
+    private readonly SeriesStorage SeriesStorage;
+    private readonly SermonStore store;
+
+    public SeriesUI(Form form, SermonStore store)
     {
+        this.store = store;
+
         SeriesStorage = new SeriesStorage();
+
         gbSeries = new GroupBox
         {
             Location = new Point(137, 220),
@@ -29,6 +34,32 @@ public class SeriesUI
             DropDownStyle = ComboBoxStyle.DropDownList
         };
 
+        //
+        // USER selects series → update store
+        //
+        cmbSeries.SelectedIndexChanged += (s, e) =>
+        {
+            if (cmbSeries.SelectedItem is string selectedSeries)
+            {
+                store.Update(state =>
+                {
+                    state.Series = selectedSeries;
+                });
+            }
+        };
+
+        //
+        // STORE updates → UI sync (prevents drift)
+        //
+        store.StateChanged += (s, state) =>
+        {
+            if (state.Series != null &&
+                cmbSeries.SelectedItem?.ToString() != state.Series)
+            {
+                cmbSeries.SelectedItem = state.Series;
+            }
+        };
+
         gbSeries.Controls.Add(cmbSeries);
 
         btnAddSeries = new Button
@@ -44,37 +75,60 @@ public class SeriesUI
         btnAddSeries.Click += BtnAddSeries_Click;
 
         gbSeries.Controls.Add(btnAddSeries);
+
         form.Controls.Add(gbSeries);
+
+        // initial load
+        LoadSeriesData();
     }
 
     private void BtnAddSeries_Click(object? sender, EventArgs e)
     {
-        using var inputBox = new InputBoxForm("Add New Series", "New Series Name:");
+        using var inputBox = new InputBoxForm(
+            "Add New Series",
+            "New Series Name:"
+        );
+
         if (inputBox.ShowDialog() == DialogResult.OK)
         {
             string name = inputBox.InputText.Trim();
+
             if (!string.IsNullOrWhiteSpace(name))
             {
                 SeriesStorage.AddSeries(name);
                 SeriesStorage.SaveOptions();
+
                 LoadSeriesData();
+
+                cmbSeries.SelectedItem = name;
+
+                store.Update(state =>
+                {
+                    state.Series = name;
+                });
             }
         }
     }
 
     public GroupBox LoadSeries(ref int groupBoxAddition)
     {
-        gbSeries.Location = new Point(gbSeries.Left, gbSeries.Top + groupBoxAddition);
-        LoadSeriesData();
+        gbSeries.Location = new Point(
+            gbSeries.Left,
+            gbSeries.Top + groupBoxAddition
+        );
+
         return gbSeries;
     }
 
     private void LoadSeriesData()
     {
         var seriesList = SeriesStorage.LoadOptions();
-        if(seriesList.SeriesNames.Count != 0)
-            cmbSeries.DataSource = seriesList.SeriesNames;
-    }
 
-    public string GetSelectedSeries() => cmbSeries.SelectedItem?.ToString() ?? string.Empty;
+        cmbSeries.DataSource = null;
+
+        if (seriesList.SeriesNames.Count != 0)
+        {
+            cmbSeries.DataSource = seriesList.SeriesNames;
+        }
+    }
 }
