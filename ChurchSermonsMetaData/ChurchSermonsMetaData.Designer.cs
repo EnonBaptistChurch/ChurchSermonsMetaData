@@ -28,10 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmChurchSermonsMetaData));
             openFileDialog1 = new OpenFileDialog();
             btnFormSermonInfo = new Button();
             btnSermonAudioUpload = new Button();
             button1 = new Button();
+            audPlain = new AxWMPLib.AxWindowsMediaPlayer();
+            ((System.ComponentModel.ISupportInitialize)audPlain).BeginInit();
             SuspendLayout();
             // 
             // btnFormSermonInfo
@@ -64,16 +67,27 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
+            // audPlain
+            // 
+            audPlain.Enabled = true;
+            audPlain.Location = new Point(142, 16);
+            audPlain.Name = "audPlain";
+            audPlain.OcxState = (AxHost.State)resources.GetObject("audPlain.OcxState");
+            audPlain.Size = new Size(317, 46);
+            audPlain.TabIndex = 10;
+            // 
             // FrmChurchSermonsMetaData
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1077, 748);
+            Controls.Add(audPlain);
             Controls.Add(button1);
             Controls.Add(btnSermonAudioUpload);
             Controls.Add(btnFormSermonInfo);
             Name = "FrmChurchSermonsMetaData";
             Text = "Church Sermons Meta Data";
+            ((System.ComponentModel.ISupportInitialize)audPlain).EndInit();
             ResumeLayout(false);
         }
 
@@ -85,6 +99,7 @@
         private Button btnFormSermonInfo;
         private Button btnSermonAudioUpload;
         private Button button1;
+        private AxWMPLib.AxWindowsMediaPlayer audPlain;
         //private GroupBox gbSeries;
     }
 }
