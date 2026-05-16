@@ -1,4 +1,4 @@
-﻿using ChurchSermonsMetaData.Models;
+﻿using SpeakerRecognition.Models;
 using System.Text.Json;
 
 namespace ChurchSermonsMetaData.Data;
