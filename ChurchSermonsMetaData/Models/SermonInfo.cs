@@ -8,5 +8,11 @@ public record SermonInfo
     public string Series { get; set; } = string.Empty;
     public DateTime Date { get; set; } = DateTime.Now;
     public string Service { get; set; } = string.Empty;
-    public List<string> BiblePassage { get; set; } = [];
+    public string BiblePassageText { get; set; } = "";
+    public List<string> BiblePassage => BiblePassageText
+    .Split(';', StringSplitOptions.RemoveEmptyEntries)
+    .Select(x => x.Trim())
+    .ToList();
+
+    public string Description { get; set; } = string.Empty;
 }
