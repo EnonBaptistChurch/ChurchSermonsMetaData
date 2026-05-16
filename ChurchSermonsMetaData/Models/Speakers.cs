@@ -1,4 +1,4 @@
-﻿namespace ChurchSermonsMetaData.Models;
+﻿namespace SpeakerRecognition.Models;
 
 public class Speakers
 {
