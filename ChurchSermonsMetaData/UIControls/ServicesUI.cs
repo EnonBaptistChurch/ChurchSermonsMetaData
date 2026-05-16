@@ -1,47 +1,80 @@
-﻿using ChurchSermonsMetaData.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ChurchSermonsMetaData.Data;
 
-namespace ChurchSermonsMetaData.UIControls
+namespace ChurchSermonsMetaData.UIControls;
+
+public class ServicesUI
 {
-    public class ServicesUI
+    private readonly GroupBox gbServices;
+    private readonly Form _form;
+    private readonly SermonStore store;
+
+    public ServicesUI(Form form, SermonStore store)
     {
-        private readonly GroupBox gbServices;
+        _form = form;
+        this.store = store;
 
-        public ServicesUI(Form form)
+        gbServices = new GroupBox
         {
-            
-            gbServices = new()
+            //
+            // gbServices
+            //
+            Location = new Point(137, 149),
+            Name = "gbServices",
+            Size = new Size(439, 57),
+            TabIndex = 4,
+            TabStop = false,
+            Text = "Services"
+        };
+
+        _form.Controls.Add(gbServices);
+    }
+
+    public void LoadServices(ref int groupBoxAddition)
+    {
+        gbServices.Location = new Point(
+            gbServices.Left,
+            gbServices.Top + groupBoxAddition
+        );
+
+        gbServices.Controls.Clear();
+
+        GeneralUI.AddRadioButtons(
+            gbServices,
+            [.. Models.Services.ServiceTimes],
+            "service",
+            RadioButton_CheckedChanged
+        );
+        groupBoxAddition += gbServices.Height + 10;
+
+    }
+
+    public void SelectService(string service)
+    {
+        foreach (Control control in gbServices.Controls)
+        {
+            if (control is RadioButton rb &&
+                rb.Text == service)
             {
-                // 
-                // gbServices
-                // 
-                Location = new Point(137, 149),
-                Name = "gbServices",
-                Size = new Size(439, 57),
-                TabIndex = 4,
-                TabStop = false,
-                Text = "Services"
-            };
-            form.Controls.Add(gbServices);
-        }
-        public void LoadServices(ref int groupBoxAddition)
-        {
-            gbServices.Location = new Point(gbServices.Left, gbServices.Top + groupBoxAddition);
-            GeneralUI.AddRadioButtons(gbServices, [.. Models.Services.ServiceTimes], "service", RadioButton_CheckedChanged);
-        }
-
-        private void RadioButton_CheckedChanged(object? sender, EventArgs e)
-        {
-            if (sender is RadioButton rb && rb.Checked)
-            {
-                // Output something when this radio button is selected
-
-                // Or do whatever logic you need
+                rb.Checked = true;
+                break;
             }
         }
     }
+
+    private void RadioButton_CheckedChanged(object? sender, EventArgs e)
+    {
+        if (sender is RadioButton rb && rb.Checked)
+        {
+            string selectedService = rb.Text;
+
+            store.Update(state =>
+            {
+                state.Service = selectedService;
+            });
+        }
+    }
+
+
+
+
 }

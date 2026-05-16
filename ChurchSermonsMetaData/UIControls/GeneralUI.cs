@@ -1,31 +1,80 @@
-﻿using ChurchSermonsMetaData.Models;
+﻿using ChurchSermonsMetaData.Data;
+using ChurchSermonsMetaData.Models;
 
 namespace ChurchSermonsMetaData.UIControls;
 
-public class GeneralUI(Form form)
+public class GeneralUI
 {
-    private readonly SpeakersUI speakersUI = new (form);
-    private readonly TitleUI titleUI = new (form);
-    private readonly DescriptionUI descriptionUI = new (form);
-    private readonly TranscriptionUI transcriptionUI = new(form);
-    private readonly BiblePassageUI biblePassagesUI = new(form);
-    private readonly SeriesUI seriesUI = new (form);
-    private readonly ServicesUI servicesUI = new (form);
-    
+    private readonly SermonStore store;
+    private readonly SpeakersUI speakersUI;
+    private readonly TitleUI titleUI;
+    private readonly DescriptionUI descriptionUI;
+    private readonly TranscriptionUI transcriptionUI;
+    private readonly BiblePassageUI biblePassagesUI;
+    private readonly SeriesUI seriesUI;
+    private readonly ServicesUI servicesUI;
+    private readonly MetaDescriptionOverviewUI metaDescriptionOverviewUI;
+    private readonly SermonStore sermonStore;
+
+    private SermonInfo _sermonInfo = new();
+
+    public GeneralUI(Form form, SermonStore store)
+    {
+        speakersUI = new SpeakersUI(form, store);
+        titleUI = new TitleUI(form, store);
+        descriptionUI = new DescriptionUI(form, store);
+        transcriptionUI = new TranscriptionUI(form);
+        biblePassagesUI = new BiblePassageUI(form, store);
+        seriesUI = new SeriesUI(form, store);
+        servicesUI = new ServicesUI(form, store);
+        metaDescriptionOverviewUI = new MetaDescriptionOverviewUI(form, store);
+        sermonStore = store;
+    }
+
+
 
     public void LoadScreens(SermonInfo? sermonInfo = null)
     {
-        int groupBoxAddition = 0;
+
+
+        int groupBoxAddition = 50;
         speakersUI.LoadSpeakers(ref groupBoxAddition);
+        groupBoxAddition += 30;
         servicesUI.LoadServices(ref groupBoxAddition);
         titleUI.LoadTitle(ref groupBoxAddition);
         seriesUI.LoadSeries(ref groupBoxAddition);
         descriptionUI.LoadDescription(ref groupBoxAddition);
-        transcriptionUI.LoadTranscription(ref groupBoxAddition);
+        
         biblePassagesUI.LoadBiblePassages(ref groupBoxAddition);
+        groupBoxAddition = 0;
+        transcriptionUI.LoadTranscription(ref groupBoxAddition);
+        metaDescriptionOverviewUI.LoadMetaDescription(ref groupBoxAddition);
 
         speakersUI.ReloadRequested += (s,e) => LoadScreens();
+        
     }
+
+    public void SetService(SermonServiceAndDate service)
+    {
+        servicesUI.SelectService(service.Service);
+        sermonStore.Update(state =>
+        {
+            if(state != null && service.Date.HasValue) {
+                state.Date = service.Date.Value;
+            }
+        });
+    }
+
+    public void HandleChange(object? sender, SermonInfo partial)
+    {
+        // merge changes instead of replacing
+        _sermonInfo.Title = partial.Title ?? _sermonInfo.Title;
+        _sermonInfo.Speaker = partial.Speaker ?? _sermonInfo.Speaker;
+        // etc...
+
+        
+    }
+
     public static void AddOtherOption(GroupBox groupBox, string radioText, Control control, ref int horizontalPosition, ref int topPosition, ref int groupBoxHeightAddition, int rbHeight = 20)
     {
         horizontalPosition = 20;
@@ -101,4 +150,5 @@ public class GeneralUI(Form form)
     public DescriptionUI GetDescriptionUI() => descriptionUI;
     public TranscriptionUI GetTranscriptionUI() => transcriptionUI;
     public BiblePassageUI GetBiblePassagesUI() => biblePassagesUI;
+
 }
