@@ -20,36 +20,41 @@ namespace ChurchSermonsMetaData.Services
                 return new SermonServiceAndDate { Service = "Other" };
 
             string name = Path.GetFileNameWithoutExtension(file.Name);
+            DateTime? date = ExtractDateFromFileName(name);
 
-            // Try to find a date in the filename
-            // Examples: "2025-10-12", "12-10-2025", "12 Oct 2025"
-            var dateMatch = Regex.Match(name, @"(\d{4}-\d{2}-\d{2}|\d{2}-\d{2}-\d{4}|\d{1,2}\s+\w+\s+\d{4})");
-            DateTime? date = null;
-
-            if (dateMatch.Success)
-            {
-                if (DateTime.TryParse(dateMatch.Value, CultureInfo.GetCultureInfo("en-GB"), DateTimeStyles.None, out DateTime parsed))
-                {
-                    date = parsed;
-                }
-            }
-
-            // Determine service type
             string service = "Other";
-            if (name.Contains("Morning", StringComparison.OrdinalIgnoreCase))
-                service = "Sunday Morning Service";
-            else if (name.Contains("Evening", StringComparison.OrdinalIgnoreCase))
-                service = "Sunday Evening Service";
-            else if (name.Contains("Midweek", StringComparison.OrdinalIgnoreCase))
-                service = "Midweek Service";
-
-            return new SermonServiceAndDate
+            if (date.HasValue)
             {
-                Date = date,
-                Service = service
-            };
-
-
+                if (!IsRecordedOnSunday(date.Value))
+                    return new SermonServiceAndDate { Service = "Midweek Service", Date = date };
+                else
+                {
+                    if (date.Value.TimeOfDay < new TimeSpan(14, 0, 0))
+                        return new SermonServiceAndDate { Service = "Morning Service", Date = date };
+                    else
+                        return new SermonServiceAndDate { Service = "Evening Service", Date = date };
+                }
+            } else {
+                return new SermonServiceAndDate { Service = "N/A", Date = date };
+            }
         }
+
+        private DateTime? ExtractDateFromFileName(string name)
+        {
+            string dateTimePart = name.Split('_')[0];
+
+            // Extract parts
+            string datePart = dateTimePart.Substring(0, 8);   // 26042026
+            string timePart = dateTimePart.Substring(8, 6);    // 111517
+
+            // Parse to DateTime
+            return DateTime.ParseExact(
+                datePart + timePart,
+                "ddMMyyyyHHmmss",
+                CultureInfo.InvariantCulture
+            );
+        }
+        private bool IsRecordedOnSunday(DateTime date)
+           => date.DayOfWeek == DayOfWeek.Sunday;
     }
 }
