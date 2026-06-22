@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmChurchSermonsMetaData));
             openFileDialog1 = new OpenFileDialog();
             btnFormSermonInfo = new Button();
             btnSermonAudioUpload = new Button();
             button1 = new Button();
-            audPlain = new AxWMPLib.AxWindowsMediaPlayer();
-            ((System.ComponentModel.ISupportInitialize)audPlain).BeginInit();
+            btnPlay = new Button();
+            btnPause = new Button();
+            btnStop = new Button();
             SuspendLayout();
             // 
             // btnFormSermonInfo
@@ -67,27 +67,49 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
-            // audPlain
+            // btnPlay
             // 
-            audPlain.Enabled = true;
-            audPlain.Location = new Point(142, 16);
-            audPlain.Name = "audPlain";
-            audPlain.OcxState = (AxHost.State)resources.GetObject("audPlain.OcxState");
-            audPlain.Size = new Size(317, 46);
-            audPlain.TabIndex = 10;
+            btnPlay.Location = new Point(13, 81);
+            btnPlay.Name = "btnPlay";
+            btnPlay.Size = new Size(75, 23);
+            btnPlay.TabIndex = 10;
+            btnPlay.Text = "Play";
+            btnPlay.UseVisualStyleBackColor = true;
+            btnPlay.Click += btnPlay_Click;
+            // 
+            // btnPause
+            // 
+            btnPause.Location = new Point(13, 110);
+            btnPause.Name = "btnPause";
+            btnPause.Size = new Size(75, 23);
+            btnPause.TabIndex = 11;
+            btnPause.Text = "Pause";
+            btnPause.UseVisualStyleBackColor = true;
+            btnPause.Click += btnPause_Click;
+            // 
+            // btnStop
+            // 
+            btnStop.Location = new Point(13, 139);
+            btnStop.Name = "btnStop";
+            btnStop.Size = new Size(75, 23);
+            btnStop.TabIndex = 12;
+            btnStop.Text = "Stop";
+            btnStop.UseVisualStyleBackColor = true;
+            btnStop.Click += btnStop_Click;
             // 
             // FrmChurchSermonsMetaData
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1077, 748);
-            Controls.Add(audPlain);
+            Controls.Add(btnStop);
+            Controls.Add(btnPause);
+            Controls.Add(btnPlay);
             Controls.Add(button1);
             Controls.Add(btnSermonAudioUpload);
             Controls.Add(btnFormSermonInfo);
             Name = "FrmChurchSermonsMetaData";
             Text = "Church Sermons Meta Data";
-            ((System.ComponentModel.ISupportInitialize)audPlain).EndInit();
             ResumeLayout(false);
         }
 
@@ -99,7 +121,9 @@
         private Button btnFormSermonInfo;
         private Button btnSermonAudioUpload;
         private Button button1;
-        private AxWMPLib.AxWindowsMediaPlayer audPlain;
+        private Button btnPlay;
+        private Button btnPause;
+        private Button btnStop;
         //private GroupBox gbSeries;
     }
 }
