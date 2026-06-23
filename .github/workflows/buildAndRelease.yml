@@ -35,8 +35,15 @@ jobs:
       # ----------------------------
       # Build main app
       # ----------------------------
-      - name: Build App
-        run: dotnet build ChurchSermonsMetaData.sln -c Release --no-restore
+      - name: Build Setup Project Only
+        shell: cmd
+        run: |
+          "%DEVENV%" ChurchSermonsMetaData.sln /Build "Release|Any CPU" /Project "ChurchSermonsMetaData.installer"
+
+      - name: Verify MSI output
+        shell: pwsh
+        run: |
+          Get-ChildItem -Recurse -Filter *.msi
 
       # ----------------------------
       # Locate Visual Studio (IMPORTANT FIX)
