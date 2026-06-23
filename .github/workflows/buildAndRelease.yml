@@ -22,7 +22,7 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore
-        run: dotnet restore ChurchSermonsMetaData.slnx
+        run: dotnet restore ChurchSermonsMetaData.sln
 
       - name: Build Solution
         shell: cmd
