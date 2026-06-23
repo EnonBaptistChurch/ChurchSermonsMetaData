@@ -27,7 +27,7 @@ jobs:
       - name: Build Solution
         shell: cmd
         run: |
-          "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com" ChurchSermonsMetaData.slnx /Build Release
+          "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com" ChurchSermonsMetaData.sln /Build Release
 
       - name: Find MSI
         shell: pwsh
