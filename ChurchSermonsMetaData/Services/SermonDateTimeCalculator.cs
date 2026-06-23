@@ -28,9 +28,9 @@ namespace ChurchSermonsMetaData.Services
                     else
                         return new SermonServiceAndDate { Service = "Evening Service", Date = date };
                 }
-            } else {
+            } 
+            else 
                 return new SermonServiceAndDate { Service = "N/A", Date = date };
-            }
         }
 
         private DateTime? ExtractDateFromFileName(string name)
