@@ -20,6 +20,9 @@ jobs:
         with:
           dotnet-version: '10.x'
 
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
       - name: Install WiX v3 Toolset
         run: choco install wixtoolset -y
         shell: pwsh
@@ -35,8 +38,9 @@ jobs:
 
       - name: Build MSI
         run: |
-          dotnet build ChurchSermonsMetaData.Installer/ChurchSermonsMetaData.Installer.wixproj `
-            --configuration Release
+          $env:PATH = "C:\Program Files (x86)\WiX Toolset v3.11\bin;$env:PATH"
+          msbuild ChurchSermonsMetaData.Installer/ChurchSermonsMetaData.Installer.wixproj `
+            /p:Configuration=Release
         shell: pwsh
 
       - name: Upload MSI
