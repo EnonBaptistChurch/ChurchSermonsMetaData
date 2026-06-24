@@ -1,0 +1,37 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+	<Package
+	  Name="ChurchSermonsMetaData"
+	  Manufacturer="Enon Baptist Church"
+	  Version="1.0.0"
+	  UpgradeCode="a0d5ded8-7810-42cd-9853-c5d3ed82e569">
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
+
+		<StandardDirectory Id="ProgramFilesFolder">
+			<Directory Id="INSTALLFOLDER" Name="ChurchSermonsMetaData" />
+		</StandardDirectory>
+
+		<Feature Id="MainFeature">
+			<ComponentGroupRef Id="AppFiles" />
+		</Feature>
+
+	</Package>
+
+	<Fragment>
+
+		<ComponentGroup Id="AppFiles">
+
+			<Component Guid="*">
+				<File Source="..\ChurchSermonsMetaData\bin\Release\net10.0-windows\win-x64\publish\ChurchSermonsMetaData.exe" />
+			</Component>
+
+			<Component Guid="*">
+				<File Source="..\ChurchSermonsMetaData\bin\Release\net10.0-windows\win-x64\publish\" />
+			</Component>
+
+		</ComponentGroup>
+
+	</Fragment>
+
+</Wix>
