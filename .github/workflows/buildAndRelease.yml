@@ -33,12 +33,11 @@ jobs:
             --configuration Release `
             --runtime win-x64 `
             --self-contained true `
-            --output ChurchSermonsMetaData/bin/Release/net10.0-windows/win-x64/publish  
+            --output ChurchSermonsMetaData/bin/Release/net10.0-windows/win-x64/publish
         shell: pwsh
 
       - name: Build MSI
         run: |
-          # Find where choco actually installed WiX
           $wixTargets = Get-ChildItem "C:\Program Files (x86)" -Recurse -Filter "WiX.targets" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
           if (-not $wixTargets) {
             $wixTargets = Get-ChildItem "C:\" -Recurse -Filter "WiX.targets" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
@@ -48,6 +47,12 @@ jobs:
             /p:Configuration=Release `
             /p:Platform=x86 `
             /p:WixTargetsPath="$wixTargets"
+        shell: pwsh
+
+      - name: Find MSI
+        run: |
+          $msi = Get-ChildItem -Recurse -Filter "*.msi" | Select-Object -ExpandProperty FullName
+          Write-Host "Found MSI(s): $msi"
         shell: pwsh
 
       - name: Upload MSI
