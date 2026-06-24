@@ -30,6 +30,14 @@ jobs:
         run: choco install wixtoolset -y
         shell: pwsh
 
+      - name: Find WiX installation
+        run: |
+          Write-Host "=== Searching for heat.exe ==="
+          Get-ChildItem "C:\" -Recurse -Filter "heat.exe" -ErrorAction SilentlyContinue | Select-Object FullName
+          Write-Host "=== Searching for WiX.targets ==="
+          Get-ChildItem "C:\" -Recurse -Filter "WiX.targets" -ErrorAction SilentlyContinue | Select-Object FullName
+        shell: pwsh
+
       - name: Publish ChurchSermonsMetaData
         run: |
           dotnet publish ChurchSermonsMetaData/ChurchSermonsMetaData.csproj `
