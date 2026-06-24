@@ -38,9 +38,11 @@ jobs:
 
       - name: Build MSI
         run: |
-          $env:PATH = "C:\Program Files (x86)\WiX Toolset v3.11\bin;$env:PATH"
+          $wixTargets = "C:\Program Files (x86)\WiX Toolset v3.11\bin\WiX.targets"
           msbuild ChurchSermonsMetaData.Installer/ChurchSermonsMetaData.Installer.wixproj `
-            /p:Configuration=Release
+            /p:Configuration=Release `
+            /p:Platform=x86 `
+            /p:WixTargetsPath="$wixTargets"
         shell: pwsh
 
       - name: Upload MSI

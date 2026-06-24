@@ -1,31 +1,31 @@
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*"
+			 Name="ChurchSermonsMetaData"
+			 Manufacturer="Enon Baptist Church"
+			 Version="1.0.0"
+			 UpgradeCode="a0d5ded8-7810-42cd-9853-c5d3ed82e569"
+			 Language="1033">
 
-	<Package
-	  Name="ChurchSermonsMetaData"
-	  Manufacturer="Enon Baptist Church"
-	  Version="1.0.0"
-	  UpgradeCode="a0d5ded8-7810-42cd-9853-c5d3ed82e569">
+		<Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
+		<MediaTemplate EmbedCab="yes" />
 
-		<StandardDirectory Id="ProgramFilesFolder">
-			<Directory Id="INSTALLFOLDER" Name="ChurchSermonsMetaData" />
-		</StandardDirectory>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="ChurchSermonsMetaData" />
+			</Directory>
+		</Directory>
 
-		<Feature Id="MainFeature">
-			<ComponentGroupRef Id="AppFiles" />
-		</Feature>
-
-	</Package>
-
-	<Fragment>
-
-		<ComponentGroup Id="AppFiles">
+		<ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
 			<Component Guid="*">
 				<File Source="..\ChurchSermonsMetaData\bin\Release\net10.0-windows\win-x64\publish\ChurchSermonsMetaData.exe" />
 			</Component>
 		</ComponentGroup>
 
-	</Fragment>
+		<Feature Id="MainFeature" Level="1">
+			<ComponentGroupRef Id="AppFiles" />
+		</Feature>
 
+	</Product>
 </Wix>
