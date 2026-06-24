@@ -1,78 +1,33 @@
-# .github/workflows/build-installer.yml
-name: Build ChurchSermonsMetaData Installer
+name: Build and Package WinForms App
 
 on:
   push:
-    branches: [main]
+    branches: [ "main" ]
   pull_request:
-  workflow_dispatch:
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: windows-latest
 
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-      - name: Setup .NET 10
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.x'
+    - name: Setup .NET 10 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
 
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
+    - name: Restore Dependencies
+      run: dotnet restore
 
-      - name: Install WiX v3.11
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311.exe" -OutFile wix311.exe
-          Start-Process -FilePath wix311.exe -ArgumentList "/quiet" -Wait
-        shell: pwsh
+    - name: Publish Single File Executable
+      run: |
+        dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./publish
 
-      - name: Publish ChurchSermonsMetaData
-        run: |
-          dotnet publish ChurchSermonsMetaData/ChurchSermonsMetaData.csproj `
-            --configuration Release `
-            --runtime win-x64 `
-            --self-contained true `
-            --output ChurchSermonsMetaData/bin/Release/net10.0-windows/win-x64/publish
-        shell: pwsh
-
-      - name: Harvest publish files with heat.exe
-        run: |
-          & "C:\Program Files (x86)\WiX Toolset v3.11\bin\heat.exe" `
-            dir "ChurchSermonsMetaData/bin/Release/net10.0-windows/win-x64/publish" `
-            -cg AppFiles `
-            -dr INSTALLFOLDER `
-            -gg -gl -scom -sreg -sfrag -srd `
-            -out "ChurchSermonsMetaData.Installer/AppFiles.wxs"
-        shell: pwsh
-
-      - name: Build MSI
-        run: |
-          msbuild ChurchSermonsMetaData.Installer/ChurchSermonsMetaData.Installer.wixproj `
-            /p:Configuration=Release `
-            /p:Platform=x64 `
-            /p:WixTargetsPath="C:\Program Files (x86)\WiX Toolset v3.11\bin\WiX.targets"
-        shell: pwsh
-
-      - name: Upload MSI artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ChurchSermonsMetaData-installer
-          path: 'ChurchSermonsMetaData.Installer/bin/Release/*.msi'
-          if-no-files-found: error
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        with:
-          tag_name: release-${{ github.run_number }}
-          name: ChurchSermonsMetaData build ${{ github.run_number }}
-          body: Automated release from commit ${{ github.sha }}
-          files: 'ChurchSermonsMetaData.Installer/bin/Release/*.msi'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: WinForms-SingleFile-Executable
+        path: ./publish/
