@@ -20,8 +20,8 @@ jobs:
         with:
           dotnet-version: '10.x'
 
-      - name: Install WiX v4 CLI
-        run: dotnet tool install --global wix
+      - name: Install WiX v3 Toolset
+        run: choco install wixtoolset -y
         shell: pwsh
 
       - name: Publish ChurchSermonsMetaData
