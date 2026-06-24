@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     permissions:
       contents: write
@@ -23,52 +23,32 @@ jobs:
         with:
           dotnet-version: '10.x'
 
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
+      - name: Install WiX v4 CLI
+        run: dotnet tool install --global wix
 
-      - name: Install WiX v3 Toolset
-        run: choco install wixtoolset -y
-        shell: pwsh
-
-      - name: Find WiX installation
-        run: |
-          Write-Host "=== Searching for heat.exe ==="
-          Get-ChildItem "C:\" -Recurse -Filter "heat.exe" -ErrorAction SilentlyContinue | Select-Object FullName
-          Write-Host "=== Searching for WiX.targets ==="
-          Get-ChildItem "C:\" -Recurse -Filter "WiX.targets" -ErrorAction SilentlyContinue | Select-Object FullName
-        shell: pwsh
+      - name: Add WiX extension
+        run: wix extension add WixToolset.UI.wixext/4.0.5
 
       - name: Publish ChurchSermonsMetaData
         run: |
-          dotnet publish ChurchSermonsMetaData/ChurchSermonsMetaData.csproj `
-            --configuration Release `
-            --runtime win-x64 `
-            --self-contained true `
+          dotnet publish ChurchSermonsMetaData/ChurchSermonsMetaData.csproj \
+            --configuration Release \
+            --runtime win-x64 \
+            --self-contained true \
             --output ChurchSermonsMetaData/bin/Release/net10.0-windows/win-x64/publish
-        shell: pwsh
 
-      - name: Harvest publish files with heat.exe
+      - name: Harvest publish files
         run: |
-          $heat = "C:\Program Files (x86)\WiX Toolset v3.11\bin\heat.exe"
-          & $heat dir "ChurchSermonsMetaData/bin/Release/net10.0-windows/win-x64/publish" `
-            -cg AppFiles `
-            -dr INSTALLFOLDER `
-            -gg -gl -scom -sreg -sfrag -srd `
-            -out "ChurchSermonsMetaData.Installer/AppFiles.wxs"
-        shell: pwsh
+          wix harvest dir \
+            ChurchSermonsMetaData/bin/Release/net10.0-windows/win-x64/publish \
+            -cg AppFiles \
+            -dr INSTALLFOLDER \
+            -out ChurchSermonsMetaData.Installer/AppFiles.wxs
 
       - name: Build MSI
         run: |
-          $wixTargets = Get-ChildItem "C:\Program Files (x86)" -Recurse -Filter "WiX.targets" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
-          if (-not $wixTargets) {
-            $wixTargets = Get-ChildItem "C:\" -Recurse -Filter "WiX.targets" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
-          }
-          Write-Host "Found WiX.targets at: $wixTargets"
-          msbuild ChurchSermonsMetaData.Installer/ChurchSermonsMetaData.Installer.wixproj `
-            /p:Configuration=Release `
-            /p:Platform=x64 `
-            /p:WixTargetsPath="$wixTargets"
-        shell: pwsh
+          dotnet build ChurchSermonsMetaData.Installer/ChurchSermonsMetaData.Installer.wixproj \
+            --configuration Release
 
       - name: Upload MSI artifact
         uses: actions/upload-artifact@v4
@@ -83,8 +63,7 @@ jobs:
         with:
           tag_name: release-${{ github.run_number }}
           name: ChurchSermonsMetaData build ${{ github.run_number }}
-          body: |
-            Automated release from commit ${{ github.sha }}
+          body: Automated release from commit ${{ github.sha }}
           files: 'ChurchSermonsMetaData.Installer/bin/Release/*.msi'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
