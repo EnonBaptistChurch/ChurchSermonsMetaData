@@ -331,7 +331,7 @@ public class BiblePassageExtractor : IBiblePassageExtractor
 
 
                 
-            int i = 0;
+            //int i = 0;
 
             
             //foreach (Match val in scriptureRefMatches)
@@ -831,9 +831,9 @@ public class BiblePassageExtractor : IBiblePassageExtractor
             // Only accept exact matches in BibleBookVariants
             string book = match.Groups["book"].Value;
             if (!BibleBooks.Any(bb => bb.Equals(book))) continue;
-            string chapter = match.Groups["chapter"].Success ? match.Groups["chapter"].Value : null;
+            string? chapter = match.Groups["chapter"].Success ? match.Groups["chapter"].Value : null;
 
-            List<string> allVerses = new List<string>();
+            List<string> allVerses = [];
 
             // Handle "verse 10 and 11" or "verse 10,11"
             if (match.Groups["verses"].Success)
@@ -935,9 +935,9 @@ public class BiblePassageExtractor : IBiblePassageExtractor
     };
 
 
-    static string NormalizeBook(string rawBook, bool hasChapterOrVerse)
+    static string? NormalizeBook(string rawBook, bool hasChapterOrVerse)
     {
-        if (BibleBookVariants.TryGetValue(rawBook, out string canonical))
+        if (BibleBookVariants.TryGetValue(rawBook, out string? canonical))
             return canonical;
 
         if (hasChapterOrVerse)
@@ -946,7 +946,7 @@ public class BiblePassageExtractor : IBiblePassageExtractor
         return null;
     }
 
-    static string FindClosestBook(string input)
+    static string? FindClosestBook(string input)
     {
         return BibleBookVariants.Values.Distinct()
             .FirstOrDefault(b => b.IndexOf(input, StringComparison.OrdinalIgnoreCase) >= 0);

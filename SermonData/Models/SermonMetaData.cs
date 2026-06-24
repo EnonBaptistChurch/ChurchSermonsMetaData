@@ -6,8 +6,8 @@ namespace SermonData.Models
 {
     public class SermonMetaData
     {
-        public string Title { get; set; }
-        public string Series { get; set; }
-        public List<string> BiblePassages { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Series { get; set; } = string.Empty;
+        public List<string> BiblePassages { get; set; } = new List<string>();
     }
 }

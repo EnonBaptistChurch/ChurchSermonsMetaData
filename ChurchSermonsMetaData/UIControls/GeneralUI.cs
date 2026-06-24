@@ -5,7 +5,6 @@ namespace ChurchSermonsMetaData.UIControls;
 
 public class GeneralUI
 {
-    private readonly SermonStore store;
     private readonly SpeakersUI speakersUI;
     private readonly TitleUI titleUI;
     private readonly DescriptionUI descriptionUI;

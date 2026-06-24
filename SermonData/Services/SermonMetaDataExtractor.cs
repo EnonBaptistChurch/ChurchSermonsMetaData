@@ -67,7 +67,8 @@ public class SermonMetaDataExtractor : ISermonMetaDataExtractor
         var sb = new StringBuilder();
         await foreach (var response in ollama.GenerateAsync(prompt))
         {
-            sb.Append(response.Response); // Stream token by token
+            if(response != null)
+                sb.Append(response.Response); // Stream token by token
         }
         return sb.ToString();
     }

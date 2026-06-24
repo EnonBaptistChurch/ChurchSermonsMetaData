@@ -16,7 +16,6 @@ namespace ChurchSermonsMetaData.Services
             string name = Path.GetFileNameWithoutExtension(file.Name);
             DateTime? date = ExtractDateFromFileName(name);
 
-            string service = "Other";
             if (date.HasValue)
             {
                 if (!IsRecordedOnSunday(date.Value))

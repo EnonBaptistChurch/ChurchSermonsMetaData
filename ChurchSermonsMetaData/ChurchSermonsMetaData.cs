@@ -47,7 +47,7 @@ namespace ChurchSermonsMetaData
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                // Get the selected file path
+                // Get the selected file path   
                 string filePath = openFileDialog1.FileName;
 
                 _mediaPlayer.Stop();
