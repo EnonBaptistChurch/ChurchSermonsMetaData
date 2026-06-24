@@ -21,15 +21,9 @@
 	<Fragment>
 
 		<ComponentGroup Id="AppFiles">
-
 			<Component Guid="*">
 				<File Source="..\ChurchSermonsMetaData\bin\Release\net10.0-windows\win-x64\publish\ChurchSermonsMetaData.exe" />
 			</Component>
-
-			<Component Guid="*">
-				<File Source="..\ChurchSermonsMetaData\bin\Release\net10.0-windows\win-x64\publish\" />
-			</Component>
-
 		</ComponentGroup>
 
 	</Fragment>
