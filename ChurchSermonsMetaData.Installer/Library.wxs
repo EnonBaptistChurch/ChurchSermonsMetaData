@@ -17,12 +17,6 @@
 			</Directory>
 		</Directory>
 
-		<ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
-			<Component Guid="*">
-				<File Source="..\ChurchSermonsMetaData\bin\Release\net10.0-windows\win-x64\publish\ChurchSermonsMetaData.exe" />
-			</Component>
-		</ComponentGroup>
-
 		<Feature Id="MainFeature" Level="1">
 			<ComponentGroupRef Id="AppFiles" />
 		</Feature>

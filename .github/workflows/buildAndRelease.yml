@@ -39,6 +39,16 @@ jobs:
             --output ChurchSermonsMetaData/bin/Release/net10.0-windows/win-x64/publish
         shell: pwsh
 
+      - name: Harvest publish files with heat.exe
+        run: |
+          $heat = "C:\Program Files (x86)\WiX Toolset v3.11\bin\heat.exe"
+          & $heat dir "ChurchSermonsMetaData/bin/Release/net10.0-windows/win-x64/publish" `
+            -cg AppFiles `
+            -dr INSTALLFOLDER `
+            -gg -gl -scom -sreg -sfrag -srd `
+            -out "ChurchSermonsMetaData.Installer/AppFiles.wxs"
+        shell: pwsh
+
       - name: Build MSI
         run: |
           $wixTargets = Get-ChildItem "C:\Program Files (x86)" -Recurse -Filter "WiX.targets" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
@@ -48,7 +58,7 @@ jobs:
           Write-Host "Found WiX.targets at: $wixTargets"
           msbuild ChurchSermonsMetaData.Installer/ChurchSermonsMetaData.Installer.wixproj `
             /p:Configuration=Release `
-            /p:Platform=x86 `
+            /p:Platform=x64 `
             /p:WixTargetsPath="$wixTargets"
         shell: pwsh
 
