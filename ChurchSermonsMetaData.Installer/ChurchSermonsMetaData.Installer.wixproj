@@ -7,7 +7,7 @@
     <ProjectGuid>488637c0-80b7-4d82-8e26-44e4f1b8be7e</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
     <OutputName>ChurchSermonsMetaData.Installer</OutputName>
-    <OutputType>Library</OutputType>
+    <OutputType>Package</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
