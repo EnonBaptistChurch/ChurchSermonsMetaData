@@ -1,14 +1,11 @@
-name: Build and Release MSI
+# .github/workflows/build-installer.yml
+name: Build ChurchSermonsMetaData Installer
 
 on:
   push:
-    branches:
-      - main
-    tags:
-      - "v*"
-
-permissions:
-  contents: write
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,81 +15,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ----------------------------
-      # Setup .NET 10
-      # ----------------------------
-      - name: Setup .NET
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.x"
+          dotnet-version: '10.x'
 
-      # ----------------------------
-      # Restore solution (.slnx supported via dotnet)
-      # ----------------------------
-      - name: Restore
-        run: dotnet restore ChurchSermonsMetaData.sln
-
-      # ----------------------------
-      # Build main app
-      # ----------------------------
-      - name: Build Setup Project Only
-        shell: cmd
-        run: |
-          "%DEVENV%" ChurchSermonsMetaData.sln /Build "Release|Any CPU" /Project "ChurchSermonsMetaData.Installer"
-
-      - name: Verify MSI output
+      - name: Install WiX v4 CLI
+        run: dotnet tool install --global wix
         shell: pwsh
-        run: |
-          Get-ChildItem -Recurse -Filter *.msi
 
-      # ----------------------------
-      # Locate Visual Studio (IMPORTANT FIX)
-      # ----------------------------
-      - name: Locate Visual Studio
+      - name: Publish ChurchSermonsMetaData
+        run: |
+          dotnet publish ChurchSermonsMetaData/ChurchSermonsMetaData.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained true `
+            --output ChurchSermonsMetaData/bin/Release/net10.0-windows/win-x64/publish
         shell: pwsh
+
+      - name: Build MSI
         run: |
-          $devenv = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" `
-            -latest `
-            -products * `
-            -requires Microsoft.Component.MSBuild `
-            -find Common7\IDE\devenv.com
-
-          if (-not $devenv) {
-            throw "devenv.com not found"
-          }
-
-          echo "DEVENV=$devenv" >> $env:GITHUB_ENV
-
-      # ----------------------------
-      # Build MSI (.vdproj)
-      # ----------------------------
-      - name: Build MSI (Setup Project)
-        shell: cmd
-        run: |
-          "%DEVENV%" ChurchSermonsMetaData.sln /Build "Release|Any CPU"
-
-      # ----------------------------
-      # Find MSI output
-      # ----------------------------
-      - name: Locate MSI
+          dotnet build ChurchSermonsMetaData.Installer/ChurchSermonsMetaData.Installer.wixproj `
+            --configuration Release
         shell: pwsh
-        run: |
-          Get-ChildItem -Path . -Recurse -Filter *.msi
 
-      # ----------------------------
-      # Upload artifact
-      # ----------------------------
-      - name: Upload MSI Artifact
+      - name: Upload MSI
         uses: actions/upload-artifact@v4
         with:
-          name: ChurchSermonsMetaData-MSI
-          path: "**/*.msi"
-
-      # ----------------------------
-      # Create GitHub Release (only on tags)
-      # ----------------------------
-      - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: "**/*.msi"
+          name: ChurchSermonsMetaData-installer
+          path: '**/*.msi'
+          if-no-files-found: error
