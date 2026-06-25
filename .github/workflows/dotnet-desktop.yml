@@ -2,7 +2,7 @@ name: Build and Release App
 
 on:
   push:
-    branches: [ "main" ] # Runs on every push to main. (You can also change this to run only on tags)
+    branches: [ "main" ]
 
 permissions:
   contents: write
@@ -12,8 +12,8 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: ChurchSermonsMetaData.sln                      # 1. CHANGE THIS
-      Main_Project_Path: ChurchSermonsMetaData/ChurchSermonsMetaData.csproj # 2. CHANGE THIS
+      Solution_Name: ChurchSermonsMetaData.sln                      
+      Main_Project_Path: ChurchSermonsMetaData/ChurchSermonsMetaData.csproj 
 
     steps:
     - name: Checkout Code
@@ -38,27 +38,42 @@ jobs:
           --runtime win-x64 `
           --self-contained false
 
-    # Zip up the published output directory so it can be uploaded to the release
+    # Zip up the published output directory (Optional alternative download)
     - name: Archive Production Artifacts
       shell: powershell
       run: |
         Compress-Archive -Path ./publish_output/* -DestinationPath ./ChurchSermonsMetaData-Windows.zip
 
-    # Automatically create a GitHub Release and attach the Zip file
+    # --- INNO SETUP STEPS ---
+    
+    # 1. Install Inno Setup compiler tool via Chocolatey
+    - name: Install Inno Setup
+      run: choco install innosetup -y
+
+    # 2. Run Inno Setup compiler on your script to generate the .exe installer
+    - name: Compile Installer
+      run: iscc installer.iss
+
+    # ------------------------
+
+    # Automatically create a GitHub Release and attach BOTH the Zip and the Installer Exe
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v1.0.${{ github.run_number }} # Automatically increments the version number (e.g., v1.0.1, v1.0.2)
+        tag_name: v1.0.${{ github.run_number }}
         name: Release v1.0.${{ github.run_number }}
         body: |
           Automated build release for ChurchSermonsMetaData.
           
-          ### Installation Instructions:
-          1. Download and extract `ChurchSermonsMetaData-Windows.zip`.
-          2. Double-click the main executable file to run.
-          3. Note: Requires the .NET 8 Runtime installed on your PC.
+          ### 🚀 Installation Options:
+          1. **Recommended:** Download and run `ChurchSermonsMetaData-Setup.exe` to install the app via the wizard.
+          2. **Portable:** Download and extract `ChurchSermonsMetaData-Windows.zip`.
+          
+          *Note: Requires the .NET 8 Runtime installed on your PC.*
         draft: false
         prerelease: false
-        files: ChurchSermonsMetaData-Windows.zip
+        files: |
+          ChurchSermonsMetaData-Windows.zip
+          ChurchSermonsMetaData-Setup.exe
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Built into GitHub automatically, no secrets to configure!
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
