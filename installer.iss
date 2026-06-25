@@ -8,7 +8,7 @@ Compression=lzma2
 SolidCompression=yes
 OutputDir=.
 OutputBaseFilename=ChurchSermonsMetaData-Setup
-ArchitectureAllowed=x64
+ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
