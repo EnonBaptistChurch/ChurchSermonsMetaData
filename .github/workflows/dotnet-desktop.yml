@@ -1,0 +1,45 @@
+name: .NET Core Desktop Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest  # Required for WPF/WinForms desktop components
+
+    env:
+      Solution_Name: ChurchSermonsMetaData.sln                      # 1. CHANGE THIS to your .sln file name
+      Main_Project_Path: ChurchSermonsMetaData/ChurchSermonsMetaData.csproj # 2. CHANGE THIS to your startup UI project path
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # Install the .NET Core SDK
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x # Matches the .NET version you are using
+
+    # Restore dependencies for the whole solution
+    - name: Restore Dependencies
+      run: dotnet restore ${{ env.Solution_Name }}
+
+    # Build and Publish the main app into a single folder
+    - name: Publish Application
+      run: |
+        dotnet publish ${{ env.Main_Project_Path }} `
+          --configuration Release `
+          --output ./publish_output `
+          --runtime win-x64 `
+          --self-contained false
+
+    # Upload the published folder as a zip artifact
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Desktop-App-Executable
+        path: ./publish_output
