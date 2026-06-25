@@ -9,8 +9,8 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: YourSolution.sln                      # 1. CHANGE THIS
-      Main_Project_Path: YourMainProject/YourMainProject.csproj # 2. CHANGE THIS
+      Solution_Name: ChurchSermonsMetaData.sln                      # 1. CHANGE THIS
+      Main_Project_Path: ChurchSermonsMetaData/ChurchSermonsMetaData.csproj # 2. CHANGE THIS
 
     steps:
     - name: Checkout Code
