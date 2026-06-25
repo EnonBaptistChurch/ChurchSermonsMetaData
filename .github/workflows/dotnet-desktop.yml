@@ -1,18 +1,16 @@
-name: .NET Core Desktop Build
+name: Build and Release App
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ "main" ] # Runs on every push to main. (You can also change this to run only on tags)
 
 jobs:
   build:
-    runs-on: windows-latest  # Required for WPF/WinForms desktop components
+    runs-on: windows-latest
 
     env:
-      Solution_Name: ChurchSermonsMetaData.sln                      # 1. CHANGE THIS to your .sln file name
-      Main_Project_Path: ChurchSermonsMetaData/ChurchSermonsMetaData.csproj # 2. CHANGE THIS to your startup UI project path
+      Solution_Name: YourSolution.sln                      # 1. CHANGE THIS
+      Main_Project_Path: YourMainProject/YourMainProject.csproj # 2. CHANGE THIS
 
     steps:
     - name: Checkout Code
@@ -22,13 +20,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x # Matches the .NET version you are using
+        dotnet-version: 8.0.x
 
-    # Restore dependencies for the whole solution
+    # Restore dependencies
     - name: Restore Dependencies
       run: dotnet restore ${{ env.Solution_Name }}
 
-    # Build and Publish the main app into a single folder
+    # Build and Publish the main app into a target folder
     - name: Publish Application
       run: |
         dotnet publish ${{ env.Main_Project_Path }} `
@@ -37,9 +35,27 @@ jobs:
           --runtime win-x64 `
           --self-contained false
 
-    # Upload the published folder as a zip artifact
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v4
+    # Zip up the published output directory so it can be uploaded to the release
+    - name: Archive Production Artifacts
+      shell: powershell
+      run: |
+        Compress-Archive -Path ./publish_output/* -DestinationPath ./ChurchSermonsMetaData-Windows.zip
+
+    # Automatically create a GitHub Release and attach the Zip file
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
       with:
-        name: Desktop-App-Executable
-        path: ./publish_output
+        tag_name: v1.0.${{ github.run_number }} # Automatically increments the version number (e.g., v1.0.1, v1.0.2)
+        name: Release v1.0.${{ github.run_number }}
+        body: |
+          Automated build release for ChurchSermonsMetaData.
+          
+          ### Installation Instructions:
+          1. Download and extract `ChurchSermonsMetaData-Windows.zip`.
+          2. Double-click the main executable file to run.
+          3. Note: Requires the .NET 8 Runtime installed on your PC.
+        draft: false
+        prerelease: false
+        files: ChurchSermonsMetaData-Windows.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Built into GitHub automatically, no secrets to configure!
