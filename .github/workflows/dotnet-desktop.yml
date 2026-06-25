@@ -4,6 +4,9 @@ on:
   push:
     branches: [ "main" ] # Runs on every push to main. (You can also change this to run only on tags)
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
